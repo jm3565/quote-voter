@@ -1,0 +1,20 @@
+.quotes-list {
+    list-style: none;
+    border: 1px solid black;
+    margin-inline-start: 1em;
+    margin-inline-end: 1em;
+    padding: 0;
+}
+
+.quote {
+    display: flex;
+    align-items: center;
+}
+
+.voting-container {
+    display: flex;
+}
+
+.count {
+    margin: 1em;
+}

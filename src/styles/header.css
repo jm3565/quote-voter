@@ -1,0 +1,20 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    padding: 1em;
+}
+
+.title {
+    font-weight: bold;
+}
+
+.subtitle {
+    font-style: italic;
+    margin-left: 5px;
+}
+
+.total-count {
+    font-weight: bold;
+    margin-left: 5px;
+}
