@@ -26,7 +26,7 @@ function App() {
   const [darkState, setDarkState] = useState(false);
   const [numQuotes, setNumQuotes] = useState(10);
   const classes = useStyles();
-  const [searchTerm, setSearchTerm] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const theme = useMemo(
     () =>
@@ -49,8 +49,10 @@ function App() {
       if(numQuotes > 0){
         let response = await get(`quotes/${numQuotes}`);
         setQuotes(response);
+        setSearchTerm('');
       }else{
         setQuotes([]);
+        setSearchTerm('');
       }
     }
 
@@ -59,18 +61,16 @@ function App() {
 
   useEffect(() => {
     async function performSearch()  {
-      if(searchTerm === null){
+      if(searchTerm.length === 0){
         return;
-      } else if(typeof searchTerm === 'string' && searchTerm.length > 0){
+      } else {
         let response = await get(encodeURI(`quotes/search/${searchTerm}`));
 
         if(response !== undefined){
           setQuotes(response);
         }else{
-          setQuotes([]);
+          setNumQuotes(0);
         }
-      } else {
-        setNumQuotes(0);
       }
     }
 
@@ -102,7 +102,7 @@ function App() {
             </Select>
           </FormControl>
           <FormControl className={classes.formControl} fullWidth>
-            <TextField id="searchbox" label="Search quote by term" type="search" variant="outlined" onChange={(event) => {setSearchTerm(event.target.value)}}/>
+            <TextField id="searchbox" label="Search quote by term" type="search" variant="outlined" value={searchTerm} onChange={(event) => {setSearchTerm(event.target.value)}}/>
           </FormControl>
         </div>
         <List items={quotes} onVoteChange={() => setVotes(`${parseInt(allVotes, 10) + 1}`)}></List>
