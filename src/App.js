@@ -9,15 +9,14 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
   },
 }));
 
@@ -27,6 +26,7 @@ function App() {
   const [darkState, setDarkState] = useState(false);
   const [numQuotes, setNumQuotes] = useState(10);
   const classes = useStyles();
+  const [searchTerm, setSearchTerm] = useState(null);
 
   const theme = useMemo(
     () =>
@@ -45,13 +45,37 @@ function App() {
   );
 
   useEffect(() => {
-      async function fetchQuotes() {
+    async function fetchQuotes() {
+      if(numQuotes > 0){
         let response = await get(`quotes/${numQuotes}`);
         setQuotes(response);
+      }else{
+        setQuotes([]);
       }
-  
-      fetchQuotes()
-    }, [numQuotes]);
+    }
+
+    fetchQuotes()
+  }, [numQuotes]);
+
+  useEffect(() => {
+    async function performSearch()  {
+      if(searchTerm === null){
+        return;
+      } else if(typeof searchTerm === 'string' && searchTerm.length > 0){
+        let response = await get(encodeURI(`quotes/search/${searchTerm}`));
+
+        if(response !== undefined){
+          setQuotes(response);
+        }else{
+          setQuotes([]);
+        }
+      } else {
+        setNumQuotes(0);
+      }
+    }
+
+    performSearch();
+  }, [searchTerm]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -59,24 +83,26 @@ function App() {
       <div className="App">
         <Header totalCount={allVotes} darkState={darkState} onDarkStateChange={()=>setDarkState(!darkState)}/>
         <div className="controls-container">
-          <FormControl variant="filled" className={classes.formControl}>
-            <InputLabel htmlFor="num-quotes-select">Num Quotes</InputLabel>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel id="num-of-quotes">Num of quotes</InputLabel>
             <Select
-              native
+              labelId="num-of-quotes"
+              id="num-quotes-selector"
               value={numQuotes}
               onChange={(event) => setNumQuotes(event.target.value)}
-              label="Num Quotes"
-              inputProps={{
-                name: 'num-quotes',
-                id: 'num-quotes-select',
-              }}
+              label="Num of quotes"
             >
-              <option value={''}>1</option>
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={15}>15</option>
-              <option value={20}>20</option>
+              <MenuItem value={0}>
+                <em>None</em>
+              </MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={15}>15</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
             </Select>
+          </FormControl>
+          <FormControl className={classes.formControl} fullWidth>
+            <TextField id="searchbox" label="Search quote by term" type="search" variant="outlined" onChange={(event) => {setSearchTerm(event.target.value)}}/>
           </FormControl>
         </div>
         <List items={quotes} onVoteChange={() => setVotes(`${parseInt(allVotes, 10) + 1}`)}></List>

@@ -6,6 +6,12 @@
     padding: 0;
 }
 
+.empty-quotes-list-message {
+    font-style: italic;
+    font-size: large;
+    margin: 1em;
+}
+
 .quote {
     display: flex;
     align-items: center;

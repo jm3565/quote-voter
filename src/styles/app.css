@@ -1,4 +1,6 @@
 .controls-container {
+    display: flex;
+    align-items: center;
     border: 1px solid black;
     border-radius: 15px;
     margin: 1em;
