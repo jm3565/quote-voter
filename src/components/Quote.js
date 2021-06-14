@@ -4,8 +4,7 @@ import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import '../styles/quotes.css';
 
-const Quote = ({id, text, onVoteChange}) => {
-    const votes = sessionStorage.getItem(id) || '0';
+const Quote = ({id, text, votes, onVoteChange}) => {
 
     const getCurrentVotes = () => {
         if(typeof votes === 'string' && votes.length > 0){
