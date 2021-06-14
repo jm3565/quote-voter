@@ -1,19 +1,27 @@
-import React, {useState} from 'react';
+import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import '../styles/quotes.css';
 
-const Quote = ({text, onVoteChange}) => {
-    const [votes, setVotes] = useState(0);
+const Quote = ({id, text, onVoteChange}) => {
+    const votes = sessionStorage.getItem(id) || '0';
+
+    const getCurrentVotes = () => {
+        if(typeof votes === 'string' && votes.length > 0){
+            return parseInt(votes, 10);
+        }
+
+        return 0;
+    }
 
     const upVote = () => {
-        setVotes(votes + 1);
+        sessionStorage.setItem(id, `${getCurrentVotes() + 1}`);
         onVoteChange();
     }
 
     const downVote = () => {
-        setVotes(votes - 1);
+        sessionStorage.setItem(id, `${getCurrentVotes() - 1}`);
         onVoteChange();
     }
 
@@ -23,7 +31,7 @@ const Quote = ({text, onVoteChange}) => {
                 <IconButton aria-label="upvote" color='primary' onClick={upVote} data-testid='upvote-btn'>
                     <ThumbUpIcon />
                 </IconButton>
-                <span className='count' data-testid='quote-votes'>{votes}</span>
+                <span className='count' data-testid='quote-votes'>{getCurrentVotes()}</span>
                 <IconButton aria-label="downvote" color='secondary' onClick={downVote} data-testid='downvote-btn'>
                     <ThumbDownIcon />
                 </IconButton>
